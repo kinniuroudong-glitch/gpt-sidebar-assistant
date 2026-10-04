@@ -1,0 +1,17 @@
+{
+  "name": "gpt-sidebar-assistant",
+  "version": "0.12.4",
+  "private": true,
+  "description": "Chrome side panel for web and YouTube context with an existing ChatGPT account",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node scripts/test.cjs",
+    "check": "node scripts/check.cjs"
+  },
+  "devDependencies": {
+    "jsdom": "26.1.0"
+  }
+}

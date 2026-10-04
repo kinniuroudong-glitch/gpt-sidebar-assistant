@@ -1,0 +1,21 @@
+const fs=require('node:fs'),assert=require('node:assert/strict');
+const {JSDOM}=require('jsdom');
+(async()=>{
+ const dom=new JSDOM('<input value="https://www.youtube.com/watch?v=U-uFsU-d6AQ"><div class="layout align-center"><button class="download-button" data-title="[RAW] Thai (auto-generated)">RAW</button></div><div class="layout"><button class="download-button" data-title="[RAW] Thai">RAW</button></div>',{url:'https://downsub.com/',runScripts:'outside-only'}),w=dom.window;
+ let handler,clicked=0,replied=false;
+ w.chrome={runtime:{id:'ext',onMessage:{addListener:f=>handler=f}}};
+ w.eval(fs.readFileSync('extension/downsub.js','utf8'));w.eval(fs.readFileSync('extension/downsub-bridge.js','utf8'));
+ const call=(m,s={id:'ext'})=>{let result;handler(m,s,r=>{result=r});return result};
+ const videoUrl='https://www.youtube.com/watch?v=U-uFsU-d6AQ';
+ w.document.querySelector('button').onclick=()=>{assert(replied,'worker receives acknowledgment before navigation');clicked++};
+ assert.equal(call({type:'downsub:probe',phase:'entry',videoUrl}).data.rawTitle,'[RAW] Thai (auto-generated)');assert.equal(clicked,0);
+ assert.equal(call({type:'downsub:click',videoUrl,rawTitle:'[RAW] Thai'}).data,undefined);assert.equal(clicked,0);
+ assert.equal(call({type:'downsub:click',videoUrl,rawTitle:'[RAW] Thai (auto-generated)'},{id:'webpage'}),undefined);
+ assert.equal(call({type:'downsub:click',videoUrl,rawTitle:'[RAW] Thai (auto-generated)'},{id:'ext',tab:{id:2}}),undefined);
+ handler({type:'downsub:click',videoUrl,rawTitle:'[RAW] Thai (auto-generated)'},{id:'ext'},r=>{assert.equal(r.data,true);replied=true});
+ await new Promise(r=>setTimeout(r,10));assert.equal(clicked,1);
+ dom.reconfigure({url:'https://subtitle.downsub.com/raw/opaque/'});w.document.body.innerHTML='<pre>สวัสดี\nจบ</pre>';
+ assert.equal(call({type:'downsub:probe',phase:'raw'}).data,'สวัสดี\nจบ');
+ w.document.body.innerHTML='';assert.equal(call({type:'downsub:probe',phase:'raw'}).data,null);
+ dom.window.close();console.log('PASS static DownSub bridge: exact original Thai; no automatic user-tab action; worker-only messages; acknowledgment precedes RAW navigation; full in-memory body');
+})().catch(e=>{console.error(e);process.exitCode=1});

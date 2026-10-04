@@ -1,0 +1,77 @@
+name: Bug report
+description: 报告可复现的功能错误或兼容问题
+title: "[Bug] "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢报告问题。提交前请刷新扩展、来源网页和侧栏，并移除截图或日志中的个人信息、Cookie、令牌和私密内容。
+  - type: input
+    id: version
+    attributes:
+      label: 扩展版本
+      description: 可在 chrome://extensions 的扩展卡片上查看。
+      placeholder: 例如 0.12.4
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Chrome 与操作系统
+      placeholder: 例如 Chrome 130 / macOS 15.1
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: 问题范围
+      options:
+        - 安装或侧栏
+        - 网页提取或总结
+        - ChatGPT 登录或临时聊天
+        - 回答流式显示或停止
+        - YouTube / DownSub 字幕
+        - 校正翻译或继续进度
+        - 其他
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤
+      description: 请写出从哪个页面、点击哪个按钮开始；使用公开测试页面时可附 URL。
+      placeholder: |
+        1. 打开……
+        2. 点击……
+        3. 输入……
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: 预期结果
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: 实际结果与完整错误文字
+      description: 请复制侧栏状态文字；不要粘贴 Cookie、请求头、会话令牌或私人字幕。
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 补充信息
+      description: 可附已脱敏截图、字幕类型（人工/自动及语言）、是否切换标签页，以及刷新扩展后是否仍可复现。
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: 提交前确认
+      options:
+        - label: 我已经在 chrome://extensions 刷新扩展，并刷新来源网页、重开侧栏。
+          required: true
+        - label: 我已从截图和文字中移除个人信息、凭证、令牌和私密内容。
+          required: true

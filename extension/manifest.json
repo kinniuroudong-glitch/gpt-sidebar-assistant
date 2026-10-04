@@ -1,0 +1,58 @@
+{
+  "manifest_version": 3,
+  "name": "GPT 随页助手",
+  "version": "0.12.4",
+  "minimum_chrome_version": "116",
+  "description": "自动提取字幕或网页正文，使用现有 ChatGPT 账号的临时聊天回答，结果直接显示在侧边栏。",
+  "permissions": [
+    "sidePanel",
+    "tabs",
+    "scripting",
+    "storage"
+  ],
+  "host_permissions": [
+    "https://*/*",
+    "http://*/*"
+  ],
+  "action": {
+    "default_title": "打开 GPT 随页助手"
+  },
+  "side_panel": {
+    "default_path": "panel.html"
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chatgpt.com/*"
+      ],
+      "js": [
+        "background-frames.js",
+        "response-stream.js"
+      ],
+      "world": "MAIN",
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://downsub.com/*",
+        "https://subtitle.downsub.com/raw/*"
+      ],
+      "js": [
+        "downsub.js",
+        "downsub-bridge.js"
+      ],
+      "run_at": "document_start"
+    },
+    {
+      "matches": [
+        "https://chatgpt.com/*"
+      ],
+      "js": [
+        "bridge.js"
+      ]
+    }
+  ]
+}
